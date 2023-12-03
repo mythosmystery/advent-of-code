@@ -40,9 +40,30 @@ treb7uchet
 In this example, the calibration values of these four lines are 12, 38, 15, and 77.
 Adding these together produces 142.
 
-Consider your entire calibration document.
-What is the sum of all of the calibration values?
- */
+--- Part Two ---
+Your calculation isn't quite right.
+It looks like some of the digits are actually spelled out with letters:
+one, two, three, four, five, six, seven, eight, and nine also count as valid "digits".
+
+Equipped with this new information, you now need to find the real first and last digit
+on each line. For example:
+
+two1nine
+eightwothree
+abcone2threexyz
+xtwone3four
+4nineeightseven2
+zoneight234
+7pqrstsixteen
+
+In this example, the calibration values are 29, 83, 13, 24, 42, 14, and 76.
+Adding these together produces 281.
+
+*/
+
+const NUMBERS: [&str; 10] = [
+    "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+];
 
 fn main() {
     let file =
@@ -53,22 +74,21 @@ fn main() {
 }
 
 fn get_numbers_from_lines(lines: Vec<&str>) -> Vec<u32> {
+    let numbers: Vec<Vec<i32>> = vec![vec![]];
     lines
         .into_iter()
         .map(|line| {
-            let mut first_digit = 0;
-            let mut last_digit = 0;
-
-            line.chars().for_each(|c| {
-                if c.is_digit(10) {
-                    if first_digit == 0 {
-                        // unwrap is fine because we know c is a digit
-                        first_digit = c.to_digit(10).unwrap();
-                    }
-                    last_digit = c.to_digit(10).unwrap();
+            for number in NUMBERS.iter() {
+                if line.contains(number) {
+                    println!("Found number {} in line {}", number, line);
                 }
-            });
-            first_digit * 10 + last_digit
+            }
+            for c in line.chars() {
+                if c.is_digit(10) {
+                    println!("Found digit {} in line {}", c, line);
+                }
+            }
+            0
         })
         .collect()
 }
@@ -85,15 +105,38 @@ mod tests {
 
     #[test]
     fn test_get_numbers_from_lines() {
-        let lines = vec!["1abc2", "pqr3stu8vwx", "a1b2c3d4e5f", "treb7uchet"];
+        let lines = vec![
+            "two1nine",
+            "eightwothree",
+            "abcone2threexyz",
+            "xtwone3four",
+            "4nineeightseven2",
+            "zoneight234",
+            "7pqrstsixteen",
+        ];
         let numbers = get_numbers_from_lines(lines);
-        assert_eq!(numbers, vec![12, 38, 15, 77]);
+        assert_eq!(numbers, vec![29, 83, 13, 24, 42, 14, 76]);
     }
 
+    // #[test]
+    // fn test_solve_puzzle() {
+    //     let lines = vec!["1abc2", "pqr3stu8vwx", "a1b2c3d4e5f", "treb7uchet"];
+    //     let sum = solve_puzzle(lines);
+    //     assert_eq!(sum, 142);
+    // }
+
     #[test]
-    fn test_solve_puzzle() {
-        let lines = vec!["1abc2", "pqr3stu8vwx", "a1b2c3d4e5f", "treb7uchet"];
+    fn test_solve_puzzle_with_numbers() {
+        let lines = vec![
+            "two1nine",
+            "eightwothree",
+            "abcone2threexyz",
+            "xtwone3four",
+            "4nineeightseven2",
+            "zoneight234",
+            "7pqrstsixteen",
+        ];
         let sum = solve_puzzle(lines);
-        assert_eq!(sum, 142);
+        assert_eq!(sum, 281);
     }
 }
